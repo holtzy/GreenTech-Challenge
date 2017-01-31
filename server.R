@@ -1,4 +1,3 @@
-a
 
 
 		################################################
@@ -347,19 +346,19 @@ inFile=reactive({
 	
 	# Ensuite, on va récupérer le sous ensemble de pesticides choisis.
 	# Attention, pas le meme widget pour le mode neuneu que pour le mode experts
-	if(input$details_visibility==TRUE){
+	#if(input$details_visibility==TRUE){
 		if(input$choix_aggregat=="Pesticide"){ my_data=my_data[which(my_data$LB_PARAMETRE==input$choix_pesticide) , ]}
 		if(input$choix_aggregat=="Famille"){ my_data=my_data[which(my_data$CODE_FAMILLE==input$choix_famille) , ]}
 		if(input$choix_aggregat=="Tous"){ my_data=my_data[which(my_data$Niveau=="Ctot"), ] }
 		if(input$choix_aggregat=="Fonction"){ my_data=my_data[which(my_data$FONCTION==input$choix_fonction), ]}
-		}
-	if(input$details_visibility==FALSE){
-		if(input$choix_aggregat_neuneu=="Tous"){ my_data=my_data[which(my_data$Niveau=="Ctot"), ] }
-		if(input$choix_aggregat_neuneu=="Atrazine"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Atrazine") , ]}
-		if(input$choix_aggregat_neuneu=="Glyphosate"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Glyphosate") , ]}
-		if(input$choix_aggregat_neuneu=="AMPA"){ my_data=my_data[which(my_data$LB_PARAMETRE=="AMPA") , ]}
-		if(input$choix_aggregat_neuneu=="Bentazone"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Bentazone") , ]}
-		}
+	#	}
+#~ 	if(input$details_visibility==FALSE){
+#~ 		if(input$choix_aggregat_neuneu=="Tous"){ my_data=my_data[which(my_data$Niveau=="Ctot"), ] }
+#~ 		if(input$choix_aggregat_neuneu=="Atrazine"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Atrazine") , ]}
+#~ 		if(input$choix_aggregat_neuneu=="Glyphosate"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Glyphosate") , ]}
+#~ 		if(input$choix_aggregat_neuneu=="AMPA"){ my_data=my_data[which(my_data$LB_PARAMETRE=="AMPA") , ]}
+#~ 		if(input$choix_aggregat_neuneu=="Bentazone"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Bentazone") , ]}
+#~ 		}
 		
 	# Et il y a plus qu a merger ca avec le shape file associé
 	if(input$geo_unit=="Station"){ 
@@ -423,8 +422,12 @@ output$map2 <- renderLeaflet({
 	  }
 	  
 		# Détermination du threshold pour la palette de couleur:
-		if(input$details_visibility==TRUE){ my_threshold=ifelse(input$choix_aggregat=="Pesticide",0.1,0.5)}
-		if(input$details_visibility==FALSE){ my_threshold=ifelse(input$choix_aggregat_neuneu=="Tous",0.5,0.1)}
+		#if(input$details_visibility==TRUE){ 
+			my_threshold=ifelse(input$choix_aggregat=="Pesticide",0.1,0.5)
+		#}
+#~ 		if(input$details_visibility==FALSE){ 
+#~ 			my_threshold=ifelse(input$choix_aggregat_neuneu=="Tous",0.5,0.1)
+#~ 		}
     
     # On crée la légende avec la fonction chargée dans l'environement global
 	  legend <- getPalette(inFile=inFile, threshold=my_threshold) 
@@ -654,7 +657,7 @@ output$treemap <- renderD3tree2({
 
 	d3tree2(treemap(don,
 				index=c("fonction", "LB_PARAMETRE"),
-				vSize=switch(input$treemapchoice, "non" = "value", "oui" = "importance_pest"),
+				vSize=switch(input$treemapchoice, "nombre de pesticides" = "value", "quantité mesurée" = "importance_pest"),
 				type="index", 
 				fontsize.labels=30,
 				fontcolor.labels="black",

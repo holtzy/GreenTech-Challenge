@@ -1,0 +1,150 @@
+header{
+	position: fixed !important;
+    width: 100%;
+}
+
+.main-sidebar{
+	position: fixed;
+}
+
+.content{
+	margin-top: 40px;
+}
+
+#toxicite_row .col-sm-4{
+	width: 100%;
+}
+#toxicite_row .col-sm-4 h3{
+	font-size: x-large;
+}
+#toxicite_row .col-sm-4 p{
+	font-size: small;
+}
+
+body {
+	#background-image:url(background.jpg);
+	#background-color: #485563;
+	#background-repeat: no-repeat;
+	#background-size: auto 100%;
+	#background-attachment: fixed;
+	#height: 100%;
+    #width: 100%;
+}
+
+/* Couleur message d'erreur*/
+.shiny-output-error-validation {
+	color: green;
+	size: 225px ;
+	padding-left: 25;
+	}
+	
+	
+/* Couleur du bandeau */
+.navbar-static-top {
+	-width: 100%;
+	-position: fixed;
+	margin-bottom: 0;
+	font-size: 15px;
+    #background-color: #2b3e50;
+    #border-color: #4e5d6c;
+    #opacity: 0.8;
+}
+
+
+#loading-spinner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	z-index: -1;
+	margin-top: -33px;  /* half of the spinner's height */
+	margin-left: -33px; /* half of the spinner's width */
+}
+
+
+#loading-content {
+	position: absolute;
+	background: #000000;
+	opacity: 0.9;
+	z-index: 100;
+	left: 0;
+	right: 0;
+	height: 100%;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+#infobox1, #infobox2, #infobox3 {
+	width: 100%;
+}
+
+.ssba-img {
+	width: 30px;
+}
+/*footer {
+	bottom: 0;
+	#position: fixed;
+}*/
+
+/*.outer {
+	z-index:0;
+	position: fixed;
+	top: 40px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	-overflow: hidden;
+	padding: 0
+}*/
+
+#controls {
+	padding-top : 10px;
+}
+
+
+/* Taille du bandeau */
+/*.navbar {
+	min-height: 62px;
+	}
+	
+
+
+
+
+/* Couleur du fond
+body	 {
+	background-image: url( http://papillondamour.p.a.pic.centerblog.net/fb850229.jpg );
+	background-color : white;
+	background-attachment:fixed;
+	background-repeat:repeat;
+} 
+*/
+
+
+
+/* Couleur du fond */
+/*body	 {
+	background-color : white;
+} 
+
+
+/* Juste pour le padding de la home-page */
+/*.container-fluid { padding-left: 0; padding-right: 0; }
+
+
+/* Petite boxe pour sélectionner les data
+.shiny-input-container:not(.shiny-input-container-inline) {
+    max-width: 13%;
+}
+*/
+
+
+
+/* CSS des lignes hr() (page de doc) */
+/*hr {
+    display: block;
+    height: 3px;
+    border: 0;
+    border-top: 1px solid black;
+    margin: 1em 0;
+    padding: 0; 
+}
