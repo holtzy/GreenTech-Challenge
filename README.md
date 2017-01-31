@@ -1,14 +1,14 @@
    The Green Tech Challenge
 ===================
 
-<img style="float: justify;" align="center" src="RESSOURCES/Logo_GenMap_Small.png">
+<img style="float: justify;" align="center" src="www/ScreenShot_GreenTech.png">
 
 Overview
 --------
 The green tech challenge.
   
 Here is a screenshot of the main sheets of the app:
-![fig1](RESSOURCES/Figure1.jpg)
+![fig1](www/ScreenShot_GreenTech.png)
 
 
 Input Format
