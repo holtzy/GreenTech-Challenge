@@ -1,14 +1,14 @@
-   The Green Tech Challenge
-===================
+   The [GreenTech Challenge](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)
+==============================
 
   
 Overview  
 --------
-The GreenTech challenge is a Dataviz competition proposed by the french Ministery of environment. A huge dataset concerning pesticides in France has been released, and the goal was to propose innovative visualizations to sensibilize and inform citizen concerning the french situation over the past 6 Years.  
+The [GreenTech challenge](http://www.developpement-durable.gouv.fr/Concours-de-data-visualisation-sur.html) is a Dataviz competition proposed by the [French Ministery of environment](http://www.developpement-durable.gouv.fr/). A huge [dataset](http://www.donnees.statistiques.developpement-durable.gouv.fr/dataviz_pesticides/) concerning pesticides in France has been released, and the goal was to propose [innovative visualizations](www.r-graph-gallery.com) to sensibilize and inform citizen concerning the french situation over the past 6 Years.  
 
-We decided to make a team of 4 friends and built a ShinyApp that allows to efficiently explore this dataset. The app is composed by several sheets, each targeting a specific theme. This tool should allow you to understand what happens in your neighbourhood and in the entire country. It is also studied to improve your genereal knowledge concerning pesticides.  
+We decided to make a team of 4 friends and built a [ShinyApp](https://shiny.rstudio.com/) that allows to efficiently explore this dataset. The app is composed by several sheets, each targeting a specific theme. This tool should allow you to understand what happens in your neighbourhood and in the entire country. It is also studied to improve your genereal knowledge concerning [pesticides](https://en.wikipedia.org/wiki/Pesticide).  
 
-Do not hesitate, try it online here!  
+Do not hesitate, try it online [here](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
 
 Here is a screenshot of the main sheets of the app:  
 ![fig1](www/ScreenShot_GreenTech.png)
@@ -24,9 +24,8 @@ The dataset used for this study is available online here. Note that the app alre
 
 Local use
 --------
-The best way to consult the application is on the web here. However, you can easily use it locally. There are 2 methods:  
-
-
+The best way to consult the application is [on the web](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/). However, you can easily use it locally. There are 2 methods:  
+  
 Open R and use the code below:
 ```
 install.packages(shiny)
