@@ -12,6 +12,7 @@
 #-----------------------------------------------------------------------------
 # --- LOAD LIBRARIES
 #-----------------------------------------------------------------------------
+library(sp)
 library(shiny)
 library(plotly)
 library(ggplot2)
@@ -57,8 +58,7 @@ library(shinyjs)
 # --- LOAD USEFUL FUNCTIONS
 #-----------------------------------------------------------------------------
 
-source("SwitchButton.R")
-
+#source("SwitchButton.R")
 #fonction pour la geoloc
 jsCode <- '
 shinyjs.geoloc = function() {

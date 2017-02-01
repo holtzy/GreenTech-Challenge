@@ -15,7 +15,6 @@ shinyServer(function(input, output, session) {
 #-----------------------------------------------------------------------------
 # --- PART0 : PERMETTRE LE PASSAGE DU HOME VERS UNE DES 4 SHEETS
 #-----------------------------------------------------------------------------
-
   
 # Lien vers tab accueil
 observeEvent(input$link_to_tabpanel_accueil, {
@@ -36,8 +35,8 @@ observeEvent(input$link_to_tabpanel_evolution, {
 })
 
 # Lien vers tab pesticide
-observeEvent(input$link_to_tabpanel_pesticide, {
-    newvalue <- "pesticide"
+observeEvent(input$link_to_tabpanel_danger, {
+    newvalue <- "danger"
     updateTabItems(session, "menu", newvalue)
 })
   
@@ -73,7 +72,7 @@ output$map <- renderLeaflet({
 	leaflet(data=station) %>% 
   	setView(lng = ifelse(input$target_zone=="Ex: France" , 2.398 , target_pos$lon) , lat = ifelse(input$target_zone=="Ex: France" , 47.08 , target_pos$lat), zoom = ifelse(input$target_zone=="Ex: France" , 5 , 12) ) %>% 
   	addTiles(options = providerTileOptions(noWrap = TRUE)) %>%
-  	addCircleMarkers(~LONG, ~LAT, layerId = ~CD_STATION, radius=8 , color="black",  fillColor=~colorQuantile("YlOrRd", station$ALTITUDE)(ALTITUDE), stroke = TRUE, fillOpacity = 0.8 , popup = my_text, clusterOptions = markerClusterOptions() )
+  	addCircleMarkers(~LONG, ~LAT, layerId = ~CD_STATION, radius=8 , color="black",  fillColor="red", stroke = TRUE, fillOpacity = 0.8 , popup = my_text, clusterOptions = markerClusterOptions() )
  })
 
 
@@ -219,7 +218,7 @@ output$barplot_val_seuil <- renderPlotly({
 
 	# Si pas de molécule au dessus de ce seuil, alors on met un message d'explication:
 	validate(
-      need(nrow(val_station) > 1, paste("La dernière année de prélèvement est ",last_year,". Ces prélèvements n'ont donnés aucun relevé supérieur à 0.025 Mg / L","\n","\n","\n","\n","-",sep=""))
+      need(nrow(val_station) > 1, paste("La dernière année de prélè	 est ",last_year,". Aucun pesticide n'a dépassé la valeur de 0.025 Mg / L."))
     ) 
     	     
 	# Si une molécule à plusieurs fonction, on va lui donner une fonction seulement, au hasard. Code un peu ghetto mais il est tard..
@@ -362,8 +361,12 @@ inFile=reactive({
 		
 	# Et il y a plus qu a merger ca avec le shape file associé
 	if(input$geo_unit=="Station"){ 
-		return(my_data)
-		}
+	  my_data$ANNEE=paste("y",my_data$ANNEE,sep="")
+	  my_data=my_data %>% spread(ANNEE,VALEUR)
+	  my_data <- merge(my_data, station[,c("CD_STATION", "NOM_COM","NUM_COM")], all.x=T, all.y=F)
+	  coordinates(my_data) <- ~LONG+LAT
+	  return(my_data)
+	}
 	if(input$geo_unit=="Departement"){	
 		my_data$ANNEE=paste("y",my_data$ANNEE,sep="")
 		my_data=my_data %>% spread(ANNEE,VALEUR)
@@ -455,25 +458,35 @@ output$map2 <- renderLeaflet({
 	# 2/ --- Cas de la station
 	if(input$geo_unit=="Station"){
 
-		data2007=inFile[which(inFile$ANNEE=="2007" & !is.na(inFile$VALEUR) ), ]
-		data2008=inFile[which(inFile$ANNEE=="2008" & !is.na(inFile$VALEUR) ), ]
-		data2009=inFile[which(inFile$ANNEE=="2009" & !is.na(inFile$VALEUR) ), ]
-		data2010=inFile[which(inFile$ANNEE=="2010" & !is.na(inFile$VALEUR) ), ]
-		data2011=inFile[which(inFile$ANNEE=="2011" & !is.na(inFile$VALEUR) ), ]
-		data2012=inFile[which(inFile$ANNEE=="2012" & !is.na(inFile$VALEUR) ), ]
-		
-		# Carto leaflet:
-		q=leaflet() %>% 
-			setView(lng = 2,34, lat = 47, zoom = 5) %>% 
-		  	addProviderTiles("Esri.WorldShadedRelief", options = providerTileOptions(opacity =0.5)) %>%  # Thunderforest.Pioneer
-			addCircleMarkers(data=data2007 , ~LONG, ~LAT, radius=2 , color=colorNumeric( palette ="YlOrRd", domain=data2007$VALEUR)(data2007$VALEUR), stroke = FALSE, fillOpacity = 0.8 , popup = "" , group="2007" ) %>%
-			addCircleMarkers(data=data2008 , ~LONG, ~LAT, radius=2 , color=colorNumeric( palette ="YlOrRd", domain=data2008$VALEUR)(data2008$VALEUR), stroke = FALSE, fillOpacity = 0.8 , popup = "" , group="2008" ) %>%
-			addCircleMarkers(data=data2009 , ~LONG, ~LAT, radius=2 , color=colorNumeric( palette ="YlOrRd", domain=data2009$VALEUR)(data2009$VALEUR), stroke = FALSE, fillOpacity = 0.8 , popup = "" , group="2009" ) %>%
-			addCircleMarkers(data=data2010 , ~LONG, ~LAT, radius=2 , color=colorNumeric( palette ="YlOrRd", domain=data2010$VALEUR)(data2010$VALEUR), stroke = FALSE, fillOpacity = 0.8 , popup = "" , group="2010" ) %>%
-			addCircleMarkers(data=data2011 , ~LONG, ~LAT, radius=2 , color=colorNumeric( palette ="YlOrRd", domain=data2011$VALEUR)(data2011$VALEUR), stroke = FALSE, fillOpacity = 0.8 , popup = "" , group="2011" ) %>%
-			addCircleMarkers(data=data2012 , ~LONG, ~LAT, radius=2 , color=colorNumeric( palette ="YlOrRd", domain=data2012$VALEUR)(data2012$VALEUR), stroke = FALSE, fillOpacity = 0.8 , popup = "" , group="2012" ) %>%
-			addLayersControl(baseGroups = c("2007","2008","2009","2010","2011","2012") , options = layersControlOptions(collapsed = FALSE) )
-	return(q)	
+	  my_text.2007=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2007,2), " &micro;g/l", sep="")
+	  my_text.2008=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2008,2), " &micro;g/l", sep="")
+	  my_text.2009=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2009,2), " &micro;g/l", sep="")
+	  my_text.2010=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2010,2), " &micro;g/l", sep="")
+	  my_text.2011=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2011,2), " &micro;g/l", sep="")
+	  my_text.2012=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2012,2), " &micro;g/l", sep="")
+	  
+	  my_threshold=ifelse(input$choix_aggregat=="Pesticide",0.1,0.5)
+	  
+	  # On crée la légende avec la fonction chargée dans l'environement global
+	  legend <- getPalette(inFile=inFile, threshold=my_threshold) 
+	  
+	  # Carto leaflet:
+	  q=leaflet(inFile) %>% 
+	    setView(lng = 2,34, lat = 47, zoom = 5) %>% 
+	    addProviderTiles("Esri.WorldShadedRelief", options = providerTileOptions(opacity =0.5)) %>%  # Thunderforest.Pioneer
+	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2007) , group="2007", popup = my_text.2011) %>%
+	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2008) , group="2008", popup = my_text.2011) %>%
+	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2009) , group="2009", popup = my_text.2011) %>%
+	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2010) , group="2010", popup = my_text.2011) %>%
+	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2011) , group="2011", popup = my_text.2011) %>%
+	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2012) , group="2012", popup = my_text.2011) %>%
+	    addLayersControl(baseGroups = c("2007","2008","2009","2010","2011","2012") , options = layersControlOptions(collapsed = FALSE) ) %>%
+	    addLegend(position = 'bottomleft', ## choose bottomleft, bottomright, topleft or topright
+	              colors = legend$colourCodes, 
+	              labels = legend$bins,  ## legend labels (only min and max)
+	              opacity = 0.6,      ##transparency again
+	              title = "Concentration<br>(en &micro;g/l)")  ## title of the legend
+	  return(q)	
 	}
 		
 })
@@ -516,7 +529,10 @@ output$graph_evol_dep <- renderPlotly({
 	#AA$Region=gsub("Languedoc-Roussillon-Midi-Pyrénées","L. Roussilon - M. Pyrénées",AA$Region)
 	
 	# Graphique en plotly
-	p=ggplot(AA , aes(x=ANNEE , y=VALEUR , color=NUM_DEP)) + geom_line() + facet_wrap(~Region, ncol=3) + geom_hline(aes(yintercept=0.1), col="red") + theme(legend.position="none" , axis.text.x = element_text(size=6)) + xlab("") + ylab("")
+	 tf <- tempfile()
+  	png(tf, height = 400, width=600) 
+  	p=ggplot(AA , aes(x=ANNEE , y=VALEUR , color=NUM_DEP)) + geom_line() + facet_wrap(~Region, ncol=3) + geom_hline(aes(yintercept=0.1), col="red") + theme(legend.position="none" , axis.text.x = element_text(size=6)) + xlab("") + ylab("")
+	dev.off()
 	ggplotly(p)
 	
 	})
@@ -612,7 +628,7 @@ output$bubblechart=renderPlotly({
 		width = 800, height = 500
 		)  %>%
 		# value of risk
-		add_annotations(x = rep(-5,4),y = c(0.9,2.3,3.4,4.5),text = c("Haute","Modéré","Légère","Faible"),xref = "x",yref = "y",showarrow = FALSE) %>%
+		add_annotations(x = rep(-5,4),y = c(0.9,2.3,3.4,4.5),text = c("Haute","Modéré","Légère","Faible"),xref = "x",yref = "y",showarrow = FALSE,col="orange",size=5) %>%
 		# Layout
 		layout(
 			 title = '',
@@ -655,7 +671,9 @@ output$treemap <- renderD3tree2({
 	don=don %>% gather(fonction, value, 2:(ncol(don)-1) )
 	don=don[don$value==1 & don$importance_pest>0 , ]
 
-	d3tree2(treemap(don,
+	tf <- tempfile()
+	png(tf, height = 400, width=600)
+	tm=treemap(don,
 				index=c("fonction", "LB_PARAMETRE"),
 				vSize=switch(input$treemapchoice, "nombre de pesticides" = "value", "quantité mesurée" = "importance_pest"),
 				type="index", 
@@ -664,7 +682,9 @@ output$treemap <- renderD3tree2({
 				fontface.labels=2,
 				bg.labels="white",
 				draw=FALSE
-	) , rootname = "Les grandes familles de Pesticides")
+	)
+	dev.off()
+	d3tree2(tm, rootname = "Les pesticides utilisés en France :   ")
 
 })
 
