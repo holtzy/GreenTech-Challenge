@@ -9,7 +9,7 @@
 
 
 # Définition du répertoire de travail
-setwd("~/Dropbox/GreenTech_challenge/") 
+setwd("~/Your_Path/GreenTech_challenge/") 
 
 
 #------------------------------

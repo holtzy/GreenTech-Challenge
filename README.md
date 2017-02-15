@@ -10,7 +10,8 @@ We decided to make a team of 4 friends and built a [ShinyApp](https://shiny.rstu
 
 Do not hesitate, try it online [here](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
 
-Here is a screenshot of the main sheets of the app:  
+Here is a screenshot of the first sheet of the app:  
+   
 ![fig1](www/ScreenShotApp.png)
 
 
@@ -18,7 +19,7 @@ Here is a screenshot of the main sheets of the app:
   
 Input
 --------
-The dataset used for this study is available online here. Note that the app already charged this dataset, so you do not really need it.  
+The dataset used for this study is available online [here](http://www.developpement-durable.gouv.fr/Concours-de-data-visualisation-sur.html). Note that the app already charged this dataset and transformed it in a R environnement, so you do not really need it.  
 
 
 
@@ -26,11 +27,10 @@ Local use
 --------
 The best way to consult the application is [on the web](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/). However, you can easily use it locally, on your own computer.
   
-
-This method should work properly. However, it can fail , especially for windows users. In this case, follow these steps:  
+Follow these steps:  
 -1/ Download this whole repository  
--2/ Open R
--3/ Install some libraries running the code below:
+-2/ Open R ([install it](http://https://www.r-project.org/) if needed)
+-3/ Install some libraries running the code below:  
 ```
 # Packages available on CRAN:
 to_install=c( "shiny", "sp", "plotly", "ggplot2", "DT", "RColorBrewer", "devtools", "leaflet", "ggmap", "tidyr", "shinydashboard", "shinyjs")
