@@ -1,7 +1,7 @@
 
 		################################################
 		#
-		#		THE GREE-TECH CHALLENGE: File Global.R
+		#		THE GREENTECH CHALLENGE: File Global.R
 		#
 		###############################################
 
@@ -12,6 +12,8 @@
 #-----------------------------------------------------------------------------
 # --- LOAD LIBRARIES
 #-----------------------------------------------------------------------------
+
+# Chargement des libraries nécessaires:
 library(sp)
 library(shiny)
 library(plotly)
@@ -26,22 +28,26 @@ library(shinydashboard)
 library(treemap)
 library(d3treeR)
 library(shinyjs)
-#library(shiny.router)
 		
-# Pour d3trrR:
+
+
+
+# --- NOTE: Installation des packages:
+# 1/ La majorité des packages sont sur le CRAN est s'installent avec:
+# install.packages("nom_du_package")
+
+# 2/ Certains packages nécessitent une installation particulière:
+
+# 2.1/ Pour d3trrR:
 #library(devtools)
 #install_github("timelyportfolio/d3treeR")
 
-#devtools::install_github("Appsilon/shiny.router")
 
-# Pour shinyjs
-#install.packages("shinyjs")
-#install.packages("V8")
+# 2.2/ Pour streamgraph
+# devtools::install_github("hrbrmstr/streamgraph")
 
-# useless?
-#library(shinythemes)
-#library(shinyAce)
-#library(colourpicker)
+# ---
+
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 
@@ -58,7 +64,6 @@ library(shinyjs)
 # --- LOAD USEFUL FUNCTIONS
 #-----------------------------------------------------------------------------
 
-#source("SwitchButton.R")
 #fonction pour la geoloc
 jsCode <- '
 shinyjs.geoloc = function() {
@@ -95,7 +100,6 @@ shinyjs.geoloc = function() {
 
 # Toutes les données sont dispo dans un environnement R grace au script 0_prepare_data
 load("DATA/env_greentech.R")
-ls()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 

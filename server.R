@@ -34,6 +34,12 @@ observeEvent(input$link_to_tabpanel_evolution, {
     updateTabItems(session, "menu", newvalue)
 })
 
+# Lien vers tab classification
+observeEvent(input$link_to_tabpanel_classification, {
+    newvalue <- "classification"
+    updateTabItems(session, "menu", newvalue)
+})
+
 # Lien vers tab pesticide
 observeEvent(input$link_to_tabpanel_danger, {
     newvalue <- "danger"
@@ -134,7 +140,6 @@ current_station=reactive({
 # Ce chunk permet de fabriquer un streamgraph qui représente l'évolution des concentrations en pesticide pour une station choisie.
 # On peut Observer le streamgraph en absolut ou en relatif
 # On peut aussi aggréger en fonction de la famille de pesticide, ou de la fonction du pesticide.
-# TODO: ajouter un système pour que le user puisse chercher par commune / dep /
 output$graph2 <- renderStreamgraph({
 
 	
@@ -218,7 +223,7 @@ output$barplot_val_seuil <- renderPlotly({
 
 	# Si pas de molécule au dessus de ce seuil, alors on met un message d'explication:
 	validate(
-      need(nrow(val_station) > 1, paste("La dernière année de prélè	 est ",last_year,". Aucun pesticide n'a dépassé la valeur de 0.025 Mg / L."))
+      need(nrow(val_station) > 1, paste("La dernière année de prélèvement est ",last_year,". Aucun pesticide n'a dépassé la valeur de 0.025 Mg / L."))
     ) 
     	     
 	# Si une molécule à plusieurs fonction, on va lui donner une fonction seulement, au hasard. Code un peu ghetto mais il est tard..
@@ -291,9 +296,9 @@ output$infobox2 <- renderInfoBox({
  	names=unique(val_station[val_station$MA_MOY>val_station$NORME_DCE , "LB_PARAMETRE"])
 	number=length(names)
 	if(number==0){
-		infoBox("Pesticide en excès", number, names, "rer", icon = icon("thumbs-up"), color = "green", fill = TRUE )
+		infoBox("Pesticides en excès :", number, names, "rer", icon = icon("thumbs-up"), color = "green", fill = TRUE )
 	}else{
-		infoBox("Pesticide en excès", number, paste(names, collapse=', '), "rer", icon = icon("warning"), color = "red", fill = TRUE )	
+		infoBox("Pesticides en excès :", number, paste(names, collapse=', '), "rer", icon = icon("warning"), color = "red", fill = TRUE )	
 	}
 	
 	})
@@ -315,11 +320,26 @@ output$infobox3 <- renderInfoBox({
 		evol=(res[2,2]-res[1,2])/res[1,2]*100
 		evol=round(evol,2)		
 
-		if(evol>5){ return(infoBox("En hausse", paste(evol," % d'augmentation"), icon = icon("arrow-up"), color = "red", fill = TRUE ))}
-		if(evol<(-5)){ return(infoBox("En baisse", paste(evol," % de baisse",sep=""), icon = icon("arrow-down"), color = "green", fill = TRUE ))}
-		if(evol>=(-5) & evol<=5){ return(infoBox("Stable", "Très peu de variation observée", icon = icon("window-minimize"), color = "light-blue", fill = TRUE ))}
+		if(evol>5){ return(infoBox("En hausse de", paste(round(evol)," %"), icon = icon("arrow-up"), color = "red", fill = TRUE ))}
+		if(evol<(-5)){ return(infoBox("En baisse de", paste(round(evol)," %",sep=""), icon = icon("arrow-down"), color = "green", fill = TRUE ))}
+		if(evol>=(-5) & evol<=5){ return(infoBox("Stable", "~", icon = icon("window-minimize"), color = "light-blue", fill = TRUE ))}
 
 		}
+	})
+
+# molecules interdites detectees
+output$infobox4 <- renderInfoBox({
+	val_station=current_station()
+	last_year=max(val_station$ANNEE)
+	val_station=val_station[val_station$ANNEE==last_year , ]
+ 	names=unique(val_station[val_station$STATUT=="PNA" & val_station$NBQUANTIF>0 , "LB_PARAMETRE"])
+	number=length(names)
+	if(number==0){
+		infoBox("Pesticides interdits détectés :", number, names, "rer", icon = icon("thumbs-up"), color = "green", fill = TRUE )
+	}else{
+		infoBox("Pesticides interdits détectés :", number, paste(names, collapse=', '), "rer", icon = icon("warning"), color = "red", fill = TRUE )	
+	}
+	
 	})
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -344,20 +364,10 @@ inFile=reactive({
 	my_data=switch(input$geo_unit, "Station"=pest_station, "Departement"=pest_departement, "Région"=pest_region, "Masse d'eau"=pest_ME)
 	
 	# Ensuite, on va récupérer le sous ensemble de pesticides choisis.
-	# Attention, pas le meme widget pour le mode neuneu que pour le mode experts
-	#if(input$details_visibility==TRUE){
-		if(input$choix_aggregat=="Pesticide"){ my_data=my_data[which(my_data$LB_PARAMETRE==input$choix_pesticide) , ]}
-		if(input$choix_aggregat=="Famille"){ my_data=my_data[which(my_data$CODE_FAMILLE==input$choix_famille) , ]}
-		if(input$choix_aggregat=="Tous"){ my_data=my_data[which(my_data$Niveau=="Ctot"), ] }
-		if(input$choix_aggregat=="Fonction"){ my_data=my_data[which(my_data$FONCTION==input$choix_fonction), ]}
-	#	}
-#~ 	if(input$details_visibility==FALSE){
-#~ 		if(input$choix_aggregat_neuneu=="Tous"){ my_data=my_data[which(my_data$Niveau=="Ctot"), ] }
-#~ 		if(input$choix_aggregat_neuneu=="Atrazine"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Atrazine") , ]}
-#~ 		if(input$choix_aggregat_neuneu=="Glyphosate"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Glyphosate") , ]}
-#~ 		if(input$choix_aggregat_neuneu=="AMPA"){ my_data=my_data[which(my_data$LB_PARAMETRE=="AMPA") , ]}
-#~ 		if(input$choix_aggregat_neuneu=="Bentazone"){ my_data=my_data[which(my_data$LB_PARAMETRE=="Bentazone") , ]}
-#~ 		}
+	if(input$choix_aggregat=="Pesticide"){ my_data=my_data[which(my_data$LB_PARAMETRE==input$choix_pesticide) , ]}
+	if(input$choix_aggregat=="Famille"){ my_data=my_data[which(my_data$CODE_FAMILLE==input$choix_famille) , ]}
+	if(input$choix_aggregat=="Tous"){ my_data=my_data[which(my_data$Niveau=="Ctot"), ] }
+	if(input$choix_aggregat=="Fonction"){ my_data=my_data[which(my_data$FONCTION==input$choix_fonction), ]}
 		
 	# Et il y a plus qu a merger ca avec le shape file associé
 	if(input$geo_unit=="Station"){ 
@@ -406,86 +416,94 @@ output$map2 <- renderLeaflet({
     # Create text for popup window:
 	  if(input$geo_unit=="Departement"){
 	    
-	    my_text.2007=paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data$y2007,2), " &micro;g/l", sep="")
-	    my_text.2008=paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data$y2008,2), " &micro;g/l", sep="")
-	    my_text.2009=paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data$y2009,2), " &micro;g/l", sep="")
-	    my_text.2010=paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data$y2010,2), " &micro;g/l", sep="")
-	    my_text.2011=paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data$y2011,2), " &micro;g/l", sep="")
-	    my_text.2012=paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data$y2012,2), " &micro;g/l", sep="")
+      for (an in sort(unique(pest_db$ANNEE))){
+        
+        assign(x = paste0("my_text.", an),
+               value = paste("<b>", inFile@data$Nom, "</b>", "<br/>", round(inFile@data[,paste0("y",an)],2), " &micro;g/l", sep=""))
+        
+      }#eo for an
 	    
 	  }else{
-	    
-	    my_text.2007=paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data$y2007,2), " &micro;g/l", sep="")
-	    my_text.2008=paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data$y2008,2), " &micro;g/l", sep="")
-	    my_text.2009=paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data$y2009,2), " &micro;g/l", sep="")
-	    my_text.2010=paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data$y2010,2), " &micro;g/l", sep="")
-	    my_text.2011=paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data$y2011,2), " &micro;g/l", sep="")
-	    my_text.2012=paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data$y2012,2), " &micro;g/l", sep="")
-	    
-	  }
+      
+	    for (an in sort(unique(pest_db$ANNEE))){
+	      
+	      assign(x = paste0("my_text.", an),
+	             value = paste("<b>", inFile@data$x, "</b>", "<br/>", round(inFile@data[,paste0("y",an)],2), " &micro;g/l", sep=""))
+	      
+	    }#eo for an
+	      
+	  }#eo if
 	  
-		# Détermination du threshold pour la palette de couleur:
-		#if(input$details_visibility==TRUE){ 
-			my_threshold=ifelse(input$choix_aggregat=="Pesticide",0.1,0.5)
-		#}
-#~ 		if(input$details_visibility==FALSE){ 
-#~ 			my_threshold=ifelse(input$choix_aggregat_neuneu=="Tous",0.5,0.1)
-#~ 		}
-    
+		# Détermination du seuil de concentration pour la palette de couleur
+		my_threshold=ifelse(input$choix_aggregat=="Pesticide",0.1,0.5)
+
     # On crée la légende avec la fonction chargée dans l'environement global
 	  legend <- getPalette(inFile=inFile, threshold=my_threshold) 
 	
 		# Je créé la carte
-		p=leaflet(inFile) %>%
-		  setView(lng = 2,34, lat = 47, zoom = 5) %>% 
-		  addProviderTiles("Esri.WorldShadedRelief", options = providerTileOptions(opacity =0.5)) %>%  # Thunderforest.Pioneer
-		  addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y2007) , group="2007", popup = my_text.2007) %>%
-		  addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y2008) , group="2008", popup = my_text.2008) %>%
-		  addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y2009) , group="2009", popup = my_text.2009) %>%
-		  addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y2010) , group="2010", popup = my_text.2010) %>%
-		  addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y2011) , group="2011", popup = my_text.2011) %>%
-		  addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y2012) , group="2012",popup = my_text.2012) %>%
-		  addLegend(position = 'bottomleft', ## choose bottomleft, bottomright, topleft or topright
-		            colors = legend$colourCodes, 
-		            labels = legend$bins,  ## legend labels (only min and max)
-		            opacity = 0.6,      ##transparency again
-		            title = "Concentration<br>(en &micro;g/l)")  %>%  ## title of the legend
-		  addLayersControl(baseGroups = c("2007","2008","2009","2010","2011","2012") , options = layersControlOptions(collapsed = FALSE))
-	return(p)
+    text <- "p=leaflet(inFile) %>%
+  	  setView(lng = 2,34, lat = 47, zoom = 5) %>% 
+		  addProviderTiles('Esri.WorldShadedRelief', options = providerTileOptions(opacity =0.5)) %>% "
+
+    for (an in sort(unique(pest_db$ANNEE))){
+      
+      text <- paste0(text,
+                     paste0("addPolygons(stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, color = ~legend$palette(inFile@data$y",an,") , group='",an,"', popup = my_text.",an,") %>%"))
+      
+    }
+
+    text <- paste0(text,
+                   "addLegend(position = 'bottomleft',
+  	            colors = legend$colourCodes, 
+		            labels = legend$bins,
+		            opacity = 0.6,      
+		            title = 'Concentration<br>(en &micro;g/l)')  %>%
+		  addLayersControl(baseGroups = as.character(sort(unique(pest_db$ANNEE))) , options = layersControlOptions(collapsed = FALSE))")
+
+    eval(parse(text=text))
+
+	  return(p)
 	}
 		
 
 	# 2/ --- Cas de la station
 	if(input$geo_unit=="Station"){
 
-	  my_text.2007=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2007,2), " &micro;g/l", sep="")
-	  my_text.2008=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2008,2), " &micro;g/l", sep="")
-	  my_text.2009=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2009,2), " &micro;g/l", sep="")
-	  my_text.2010=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2010,2), " &micro;g/l", sep="")
-	  my_text.2011=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2011,2), " &micro;g/l", sep="")
-	  my_text.2012=paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data$y2012,2), " &micro;g/l", sep="")
-	  
+	  for (an in sort(unique(pest_db$ANNEE))){
+	    
+	    assign(x = paste0("my_text.", an),
+	           value = paste("<b>",inFile@data$NOM_COM," (",inFile@data$NUM_COM,") </b>", "<br/>", round(inFile@data[,paste0("y",an)],2), " &micro;g/l", sep=""))
+	    
+	  }#eo for an
+    
+	  # Détermination du seuil de concentration pour la palette de couleur
 	  my_threshold=ifelse(input$choix_aggregat=="Pesticide",0.1,0.5)
 	  
 	  # On crée la légende avec la fonction chargée dans l'environement global
 	  legend <- getPalette(inFile=inFile, threshold=my_threshold) 
 	  
 	  # Carto leaflet:
-	  q=leaflet(inFile) %>% 
-	    setView(lng = 2,34, lat = 47, zoom = 5) %>% 
-	    addProviderTiles("Esri.WorldShadedRelief", options = providerTileOptions(opacity =0.5)) %>%  # Thunderforest.Pioneer
-	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2007) , group="2007", popup = my_text.2011) %>%
-	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2008) , group="2008", popup = my_text.2011) %>%
-	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2009) , group="2009", popup = my_text.2011) %>%
-	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2010) , group="2010", popup = my_text.2011) %>%
-	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2011) , group="2011", popup = my_text.2011) %>%
-	    addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y2012) , group="2012", popup = my_text.2011) %>%
-	    addLayersControl(baseGroups = c("2007","2008","2009","2010","2011","2012") , options = layersControlOptions(collapsed = FALSE) ) %>%
-	    addLegend(position = 'bottomleft', ## choose bottomleft, bottomright, topleft or topright
+    text <- "q=leaflet(inFile) %>% 
+      setView(lng = 2,34, lat = 47, zoom = 5) %>%
+    addProviderTiles('Esri.WorldShadedRelief', options = providerTileOptions(opacity =0.5)) %>%"
+	  
+	  for (an in sort(unique(pest_db$ANNEE))){
+	    
+	    text <- paste0(text,
+	                   paste0("addCircleMarkers(stroke = FALSE, radius=2, fillOpacity = 0.8, color = ~legend$palette(inFile@data$y",an,") , group='",an,"', popup = my_text.",an,") %>%"))
+	    
+	  }#eo for
+    
+	   text <- paste0(text,
+                    "addLayersControl(baseGroups = as.character(sort(unique(pest_db$ANNEE))) , options = layersControlOptions(collapsed = FALSE) ) %>%
+      addLegend(position = 'bottomleft',
 	              colors = legend$colourCodes, 
-	              labels = legend$bins,  ## legend labels (only min and max)
-	              opacity = 0.6,      ##transparency again
-	              title = "Concentration<br>(en &micro;g/l)")  ## title of the legend
+	              labels = legend$bins,
+	              opacity = 0.6,
+	              title = 'Concentration<br>(en &micro;g/l)')")
+    
+	  eval(parse(text=text))
+    
 	  return(q)	
 	}
 		
@@ -520,19 +538,22 @@ output$graph_evol_dep <- renderPlotly({
 	if(input$choix_aggregat=="Fonction"){ my_data=my_data[which(my_data$FONCTION==input$choix_fonction), ]}
 
 	# Ajout nom de la région
-	link=unique(departements@data[,c(1,3)])
+	link=unique(departements@data[,c(1:3)])
 	AA=merge(my_data, link , by.x="NUM_DEP" , by.y="Numero" , all.x=T)
-	
-	# Racourcissement noms de régions:
-	#AA$Region=gsub("Alsace-Champagne-Ardenne-Lorraine","Als.-Champ.-Ard.-Lor.",AA$Region)
-	#AA$Region=gsub("Aquitaine-Limousin-Poitou-Charentes","Aqu.-Limou.-P. Charentes",AA$Region)
-	#AA$Region=gsub("Languedoc-Roussillon-Midi-Pyrénées","L. Roussilon - M. Pyrénées",AA$Region)
-	
+	colnames(AA)[colnames(AA)=="ANNEE"] <- "Année"
+	colnames(AA)[colnames(AA)=="VALEUR"] <- "Valeur"
+  
+	print("AA")
+	print(head(AA))
+		
 	# Graphique en plotly
-	 tf <- tempfile()
-  	png(tf, height = 400, width=600) 
-  	p=ggplot(AA , aes(x=ANNEE , y=VALEUR , color=NUM_DEP)) + geom_line() + facet_wrap(~Region, ncol=3) + geom_hline(aes(yintercept=0.1), col="red") + theme(legend.position="none" , axis.text.x = element_text(size=6)) + xlab("") + ylab("")
-	dev.off()
+	pdf(NULL)
+	p=ggplot(AA , aes(x=Année , y=Valeur , group=Nom, color=Nom)) + 
+		geom_line() + 
+		facet_wrap(~Region, ncol=3) + 
+		geom_hline(aes(yintercept=0.1), col="red") + 
+		theme(legend.position="none" , axis.text.x = element_text(size=6)) + 
+		xlab("") + ylab("")
 	ggplotly(p)
 	
 	})
@@ -557,7 +578,10 @@ output$graph_evol_dep <- renderPlotly({
 # il va falloir en calculer un dans le 0_prepare_data
 output$barplot_most_important_pesticides <- renderPlot({
 	
+	print(head(c))
+	colnames(c)[2]="importance_pest"
 	c=head(c[order(c$importance_pest , decreasing=T) , ])
+	
 	ggplot(c , aes(y=importance_pest , x=reorder(Group.1,importance_pest,decreasing=T), label=reorder(Group.1,importance_pest,decreasing=T))) + 
 	geom_bar(stat = "identity", width=0.8, color="transparent",fill=rgb(0.3,0.5,0.9,0.8) ) + 
 	scale_fill_brewer(palette = "YlOrRd") +
@@ -676,7 +700,8 @@ output$treemap <- renderD3tree2({
 	tm=treemap(don,
 				index=c("fonction", "LB_PARAMETRE"),
 				vSize=switch(input$treemapchoice, "nombre de pesticides" = "value", "quantité mesurée" = "importance_pest"),
-				type="index", 
+				type="index",
+				palette=brewer.pal(3, "Dark2"),
 				fontsize.labels=30,
 				fontcolor.labels="black",
 				fontface.labels=2,

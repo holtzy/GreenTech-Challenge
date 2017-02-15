@@ -778,12 +778,15 @@ evol=(res[2,2]-res[1,2])/res[1,2]*100
 	#AA$Region=gsub("Languedoc-Roussillon-Midi-Pyrénées","L. Roussilon - M. Pyrénées",AA$Region)
 	
 	# Graphique en plotly
-	p=ggplot(AA , aes(x=ANNEE , y=VALEUR , color=NUM_DEP)) + geom_line() + facet_wrap(~Region, ncol=3) + geom_hline(aes(yintercept=0.1), col="red") + theme(legend.position="none" , axis.text.x = element_text(size=6)) + xlab("") + ylab("")
+	p=ggplot(AA , aes(x=ANNEE , y=VALEUR , group=NUM_DEP, color=NUM_DEP)) + 
+		geom_line() + 
+		facet_wrap(~Region, ncol=3) + 
+		geom_hline(aes(yintercept=0.1), col="red") + 
+		theme(legend.position="none" , axis.text.x = element_text(size=6)) + 
+		xlab("") + ylab("")
 	ggplotly(p)
 	
 	})
-
-
 
 
 
