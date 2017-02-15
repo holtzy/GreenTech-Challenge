@@ -1,4 +1,4 @@
-   The [GreenTech Challenge](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)
+   The [GreenTech Challenge](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/) : Superviz team
 ==============================
 
   
@@ -28,8 +28,8 @@ Local use
 The best way to consult the application is [on the web](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/). However, you can easily use it locally, on your own computer.
   
 Follow these steps:  
--1/ Download this whole repository  
--2/ Open R ([install it](http://https://www.r-project.org/) if needed)
+-1/ Download this whole repository   
+-2/ Open R ([install it](http://https://www.r-project.org/) if needed)  
 -3/ Install some libraries running the code below:  
 ```
 # Packages available on CRAN:
@@ -43,7 +43,7 @@ install_github("mtennekes/treemap", subdir="pkg")
 install_github("timelyportfolio/d3treeR")
 ```
 
--4/ Start the app from R (add your proper path to the folder):  
+-4/ Start the app from R (add your proper path to the folder):    
 ```
 library(shiny)
 runApp("This/is/my/path/GreenTech-Challenge")
