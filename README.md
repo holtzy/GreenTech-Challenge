@@ -1,4 +1,4 @@
-   The [GreenTech Challenge](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/) : Superviz team
+   The [GreenTech Challenge](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/) : Superviz team
 ==============================
 
   
