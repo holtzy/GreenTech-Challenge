@@ -8,10 +8,10 @@ The [GreenTech challenge](http://www.developpement-durable.gouv.fr/Concours-de-d
 
 We decided to make a team of 4 friends and built a [ShinyApp](https://shiny.rstudio.com/) that allows to efficiently explore this dataset. The app is composed by several sheets, each targeting a specific theme. This tool should allow you to understand what happens in your neighbourhood and in the entire country. It is also studied to improve your genereal knowledge concerning [pesticides](https://en.wikipedia.org/wiki/Pesticide).  
 
-Do not hesitate, try it online [here](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
+Do not hesitate, try it online [here](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
 
 Here is a screenshot of the main sheets of the app:  
-![fig1](www/ScreenShot_GreenTech.png)
+![fig1](www/ScreenShotApp.png)
 
 
   
@@ -24,19 +24,26 @@ The dataset used for this study is available online here. Note that the app alre
 
 Local use
 --------
-The best way to consult the application is [on the web](www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/). However, you can easily use it locally. There are 2 methods:  
+The best way to consult the application is [on the web](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/). However, you can easily use it locally, on your own computer.
   
-Open R and use the code below:
-```
-install.packages(shiny)
-library(shiny)
-runGitHub("GreenTech-Challenge","holtzy")
-```
 
 This method should work properly. However, it can fail , especially for windows users. In this case, follow these steps:  
 -1/ Download this whole repository  
--2/ Open R and install the libraries written at the beginning of the global.r file.  
--3/ Start the app from R:  
+-2/ Open R
+-3/ Install some libraries running the code below:
+```
+# Packages available on CRAN:
+to_install=c( "shiny", "sp", "plotly", "ggplot2", "DT", "RColorBrewer", "devtools", "leaflet", "ggmap", "tidyr", "shinydashboard", "shinyjs")
+install.packages(to_install)
+
+# Packages comming from Github
+library(devtools)
+install_github("hrbrmstr/streamgraph")
+install_github("mtennekes/treemap", subdir="pkg")
+install_github("timelyportfolio/d3treeR")
+```
+
+-4/ Start the app from R (add your proper path to the folder):  
 ```
 library(shiny)
 runApp("This/is/my/path/GreenTech-Challenge")
@@ -46,7 +53,7 @@ runApp("This/is/my/path/GreenTech-Challenge")
   
 Members
 --------
-The GreenTech Challenge app has been developped by 4 friends from [Montpellier Supagro](www.supagro.fr/):    
+This application has been developped by 4 friends from [Montpellier Supagro](www.supagro.fr/):    
 Charles Moszkowicz: [company](http://eneo.fr/fr/contact/)   
 Jean-Charles Simonin: [company](http://eneo.fr/fr/contact/)   
 Guilhem Marre: [linkedin](https://www.linkedin.com/in/guilhem-marre-42132b28)   
