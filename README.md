@@ -10,20 +10,21 @@ The [GreenTech challenge](http://www.developpement-durable.gouv.fr/Concours-de-d
 
 We decided to make a team of 4 friends and built a [ShinyApp](https://shiny.rstudio.com/) that allows to efficiently explore this dataset. The app is composed by several sheets, each targeting a specific theme. This tool should allow you to understand what happens in your neighbourhood and in the entire country. It is also studied to improve your genereal knowledge concerning [pesticides](https://en.wikipedia.org/wiki/Pesticide).  
 
-You can access the app online [here](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
+You can access the app online [here](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  Note that we got the **third prize** for this project.
 
 Here is a screenshot of the first sheet of the app:  
    
 ![fig1](www/ScreenShotApp.png)
 
 
-  
+  <br><br>
   
 Input
 --------
 The dataset used for this study is available online [here](http://www.developpement-durable.gouv.fr/Concours-de-data-visualisation-sur.html). Note that the app already charged this dataset and transformed it in a R environnement, so you do not really need it.  
 
 
+<br><br>
 
 Local use
 --------
@@ -51,7 +52,7 @@ library(shiny)
 runApp("This/is/my/path/GreenTech-Challenge")
 ```
 
-
+<br><br>
   
 Members
 --------
