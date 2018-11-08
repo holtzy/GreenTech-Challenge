@@ -2,13 +2,15 @@
 ==============================
 
   
+<br><br>
+
 Overview  
 --------
-The [GreenTech challenge](http://www.developpement-durable.gouv.fr/Concours-de-data-visualisation-sur.html) is a Dataviz competition proposed by the [French Ministery of environment](http://www.developpement-durable.gouv.fr/). A huge [dataset](http://www.donnees.statistiques.developpement-durable.gouv.fr/dataviz_pesticides/) concerning pesticides in France has been released, and the goal was to propose [innovative visualizations](www.r-graph-gallery.com) to sensibilize and inform citizen concerning the french situation over the past 6 Years.  
+The [GreenTech challenge](http://www.developpement-durable.gouv.fr/Concours-de-data-visualisation-sur.html) is a Dataviz competition launched by the [French Ministery of environment](http://www.developpement-durable.gouv.fr/) that took place in 2017. A huge [dataset](http://www.donnees.statistiques.developpement-durable.gouv.fr/dataviz_pesticides/) concerning pesticides in France has been released, and the goal was to build [innovative visualizations](www.r-graph-gallery.com) to sensibilize and inform citizen concerning the french situation over the past 6 Years.  
 
 We decided to make a team of 4 friends and built a [ShinyApp](https://shiny.rstudio.com/) that allows to efficiently explore this dataset. The app is composed by several sheets, each targeting a specific theme. This tool should allow you to understand what happens in your neighbourhood and in the entire country. It is also studied to improve your genereal knowledge concerning [pesticides](https://en.wikipedia.org/wiki/Pesticide).  
 
-Do not hesitate, try it online [here](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
+You can access the app online [here](http://www.agap-sunshine.inra.fr/holtz-apps/GreenTech_Challenge/)!  
 
 Here is a screenshot of the first sheet of the app:  
    
